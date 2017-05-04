@@ -16,7 +16,8 @@ using namespace std;
 //Function prototypes
 void add(RedBlackBinaryNode* & root, int newNode);
 void print(RedBlackBinaryNode* root);
-//void remove(RedBlackBinaryNode* & root, int target);
+void remove(RedBlackBinaryNode* & root, int target);
+void search(RedBlackBinaryNode* root, int target);
 void case1(RedBlackBinaryNode* addedNode, RedBlackBinaryNode* & root);
 void case2(RedBlackBinaryNode* addedNode, RedBlackBinaryNode* & root);
 void case3(RedBlackBinaryNode* addedNode, RedBlackBinaryNode* & root);
@@ -92,6 +93,20 @@ int main () {
 						  add(root, target);
 
 					  }
+					  else if (choose == 's' || choose == 'S') {
+						  int target;
+						  cout << "Please enter the value of the Node you want to search for." << endl << "Target: ";
+						  cin >> target;
+						  search(root, target);
+
+					  }
+		//			  else if (choose == 's' || choose == 'S') {
+		//				  int target;
+		//				  cout << "Please enter the value of the Node you want to delete." << endl << "Target: ";
+		//				  cin >> target;
+		//				  remove(root, target);
+		//
+		//			  }
 					  else if (choose == 'c' || choose == 'C') isFinished = true;
 					  else cout << "That input is invalid. Please try again." << endl;
 					}
@@ -131,7 +146,7 @@ int main () {
 			print(root);
 			bool isFinished = false;
 			while (!isFinished) {
-			  cout << "Would you like to \"print\" the tree, \"add\" a node from the tree, or \"continue\"?" << endl << "Input: ";
+			  cout << "Would you like to \"print\" the tree, \"add\" a node from the tree, \"search\" for a value, \"delete\" a node, or \"continue\"?" << endl << "Input: ";
 			  cin >> choose;
 			  cin.ignore(256, '\n');
 			  if (choose == 'p' || choose == 'P') print(root);
@@ -142,6 +157,20 @@ int main () {
 				  add(root, target);
 
 			  }
+			  else if (choose == 's' || choose == 'S') {
+				  int target;
+				  cout << "Please enter the value of the Node you want to search for." << endl << "Target: ";
+				  cin >> target;
+				  search(root, target);
+
+			  }
+//			  else if (choose == 's' || choose == 'S') {
+//				  int target;
+//				  cout << "Please enter the value of the Node you want to delete." << endl << "Target: ";
+//				  cin >> target;
+//				  remove(root, target);
+//
+//			  }
 			  else if (choose == 'c' || choose == 'C') isFinished = true;
 			  else cout << "That input is invalid. Please try again." << endl;
 			}
@@ -255,6 +284,7 @@ void remove(RedBlackBinaryNode* & root, int target) {
 		}
 	}
 	cout << "A node with value of \"" << target << "\" was removed from the tree." << endl;
+	//TODO In here, once the replacement is found, don't delete it and instead call red-black stuff on it.
 	if (current->getLeft() != NULL) hasLeft = true;
 	if (current->getRight() != NULL) hasRight = true;
 	if (parent != NULL)
@@ -297,6 +327,26 @@ void remove(RedBlackBinaryNode* & root, int target) {
 		delete current;
 	}
 
+}
+
+//Searches for the given node and prints whether or not it's in the tree
+void search(RedBlackBinaryNode* root, int target) {
+	RedBlackBinaryNode* current = root;
+	if (root == NULL) {
+		cout << "The root is null. There is nothing in this tree, especially not " << target << "." << endl;
+		return;
+	}
+	while (current != NULL) {
+		if (target == current->getData()) {
+			cout << "The value " << target << " exists in this tree." << endl;
+			return;
+		}
+		if (target <= current->getData()) {
+			current = current->getLeft();
+		}
+		else current = current->getRight();
+	}
+	cout << "The value " << target << " does not exist in this tree." << endl;
 }
 
 //Case 1 of insertion: The node is the root, so set it to black.
