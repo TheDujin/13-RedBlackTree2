@@ -25,13 +25,13 @@ void case4(RedBlackBinaryNode* addedNode, RedBlackBinaryNode* & root);
 void case5(RedBlackBinaryNode* addedNode, RedBlackBinaryNode* & root);
 void rotateLeft(RedBlackBinaryNode* target, RedBlackBinaryNode* & root);
 void rotateRight(RedBlackBinaryNode* target, RedBlackBinaryNode* & root);
-void deleteOneChild(RedBlackBinaryNode* & target);
-void deleteCase1(RedBlackBinaryNode* & target);
-void deleteCase2(RedBlackBinaryNode* & target);
-void deleteCase3(RedBlackBinaryNode* & target);
-void deleteCase4(RedBlackBinaryNode* & target);
-void deleteCase5(RedBlackBinaryNode* & target);
-void deleteCase6(RedBlackBinaryNode* & target);
+void deleteOneChild(RedBlackBinaryNode* & target, RedBlackBinaryNode* & root);
+void deleteCase1(RedBlackBinaryNode* & target, RedBlackBinaryNode* & root);
+void deleteCase2(RedBlackBinaryNode* & target, RedBlackBinaryNode* & root);
+void deleteCase3(RedBlackBinaryNode* & target, RedBlackBinaryNode* & root);
+void deleteCase4(RedBlackBinaryNode* & target, RedBlackBinaryNode* & root);
+void deleteCase5(RedBlackBinaryNode* & target, RedBlackBinaryNode* & root);
+void deleteCase6(RedBlackBinaryNode* & target, RedBlackBinaryNode* & root);
 
 
 
@@ -461,51 +461,59 @@ void rotateRight(RedBlackBinaryNode* target, RedBlackBinaryNode* & root) {
 }
 
 //Deletes the target node, which must only have one child.
-void deleteOneChild(RedBlackBinaryNode* & target) {
+void deleteOneChild(RedBlackBinaryNode* & target, RedBlackBinaryNode* & root) {
 	cout << "Delete one child" << endl;
 	RedBlackBinaryNode* child = target->getLeft() != NULL ? target->getLeft() : target->getRight();
 	if (target == target->getParent()->getLeft()) target->getParent()->setLeft(child);
 	else target->getParent()->setRight(child);
 	if (child != NULL) child->setParent(target->getParent());
+	//TODO Does the above work?
 	if (target->getIsBlack()) {
 		if (child != NULL && !child->getIsBlack()) child->setIsBlack(false);
 		else {
-			deleteCase1(child);
+			deleteCase1(child, root);
 		}
 	}
 }
 
 //Deletion case 1: If target is the new root, we're done. Otherwise, do deletion case 2.
-void deleteCase1(RedBlackBinaryNode* & target) {
+void deleteCase1(RedBlackBinaryNode* & target, RedBlackBinaryNode* & root) {
 	cout << "Delete case 1" << endl;
-	if (target->getParent() != NULL) deleteCase2(target);
+	if (target->getParent() != NULL) deleteCase2(target, root);
 }
 
 //Deletion case 2: If target's sibling is red, rotate the tree. Then call case 3.
-void deleteCase2(RedBlackBinaryNode* & target) {
+void deleteCase2(RedBlackBinaryNode* & target, RedBlackBinaryNode* & root) {
 	cout << "Delete case 2" << endl;
+	RedBlackBinaryNode* sibling = target->sibling();
+	if (!sibling->getIsBlack()) {
+		target->getParent()->setIsBlack(false);
+		sibling->setIsBlack(true);
+		if (target == target->getParent()->getLeft()) rotateLeft(target->getParent(), root);
+		else rotateRight(target->getParent(), root);
+	}
 }
 
 //Deletion case 3: If target's parent, sibling, and nephews are black, we repaint sibling to red and recursively call
 //case 1 on parent. Otherwise, proceed to case 4.
-void deleteCase3(RedBlackBinaryNode* & target) {
+void deleteCase3(RedBlackBinaryNode* & target, RedBlackBinaryNode* & root) {
 	cout << "Delete case 3" << endl;
 }
 
 //Deletion case 4: If target's parent is red and its sibling and nephews are black, swap colors of parent and sibling.
 //Else, call case 5.
-void deleteCase4(RedBlackBinaryNode* & target) {
+void deleteCase4(RedBlackBinaryNode* & target, RedBlackBinaryNode* & root) {
 	cout << "Delete case 4" << endl;
 }
 
 //Deletion case 5: If target's sibling is black and one of its nephews is red while the other is black, rotate
 //sibling so that the red nephew goes on top. Then call case 6.
-void deleteCase5(RedBlackBinaryNode* & target) {
+void deleteCase5(RedBlackBinaryNode* & target, RedBlackBinaryNode* & root) {
 	cout << "Delete case 5" << endl;
 }
 
 //Deletion case 6: Set target's sibling's color to target's parent's color then rotate so that the sibling is on top,
 //then set one of the sibling's red children (left or right depends on the direction of tree rotate)
-void deleteCase6(RedBlackBinaryNode* & target) {
+void deleteCase6(RedBlackBinaryNode* & target, RedBlackBinaryNode* & root) {
 	cout << "Delete case 6" << endl;
 }
