@@ -108,7 +108,7 @@ int main () {
 						  search(root, target);
 
 					  }
-		//			  else if (choose == 's' || choose == 'S') {
+		//			  else if (choose == 'd' || choose == 'D') {
 		//				  int target;
 		//				  cout << "Please enter the value of the Node you want to delete." << endl << "Target: ";
 		//				  cin >> target;
@@ -172,7 +172,7 @@ int main () {
 				  search(root, target);
 
 			  }
-//			  else if (choose == 's' || choose == 'S') {
+//			  else if (choose == 'd' || choose == 'D') {
 //				  int target;
 //				  cout << "Please enter the value of the Node you want to delete." << endl << "Target: ";
 //				  cin >> target;
@@ -463,11 +463,22 @@ void rotateRight(RedBlackBinaryNode* target, RedBlackBinaryNode* & root) {
 //Deletes the target node, which must only have one child.
 void deleteOneChild(RedBlackBinaryNode* & target) {
 	cout << "Delete one child" << endl;
+	RedBlackBinaryNode* child = target->getLeft() != NULL ? target->getLeft() : target->getRight();
+	if (target == target->getParent()->getLeft()) target->getParent()->setLeft(child);
+	else target->getParent()->setRight(child);
+	if (child != NULL) child->setParent(target->getParent());
+	if (target->getIsBlack()) {
+		if (child != NULL && !child->getIsBlack()) child->setIsBlack(false);
+		else {
+			deleteCase1(child);
+		}
+	}
 }
 
 //Deletion case 1: If target is the new root, we're done. Otherwise, do deletion case 2.
 void deleteCase1(RedBlackBinaryNode* & target) {
 	cout << "Delete case 1" << endl;
+	if (target->getParent() != NULL) deleteCase2(target);
 }
 
 //Deletion case 2: If target's sibling is red, rotate the tree. Then call case 3.
