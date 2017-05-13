@@ -41,6 +41,9 @@ using namespace std;
   * RedBlackBinaryNode* getRight()
   * - Returns the RedBlackBinaryNode pointer that is the right child of this RedBlackBinaryNode;
   *    returns the value in the member right.
+  * RedBlackBinaryNode* getParent()
+  * - Returns the RedBlackBinaryNode pointer that is the parent of this RedBlackBinaryNode;
+  *    returns the value in the member parent.
   * char* getData()
   * - Returns the int value that this RedBlackBinaryNode contains;
   *    returns the value in the member data.
@@ -56,6 +59,9 @@ using namespace std;
   * void setParent(RedBlackBinaryNode* newParent)
   * - Sets the value for the member parent.
   *    Parameters: newParent - the RedBlackBinaryNode pointer that the member parent is set to.
+  * void setData(int newData)
+  * - Sets the value for the member data.
+  *    Parameters: newData - the int value that the member data is set to.
   * void setIsBlack(bool newIsBlack)
   * - Sets the value for the member isBlack.
   *    Parameters: newIsBlack - the bool value that the member isBlack is set to.
@@ -65,6 +71,9 @@ using namespace std;
   * RedBlackBinaryNode* uncle()
   * - Returns the RedBlackBinaryNode pointer that is the uncle of this RedBlackBinaryNode;
   *    returns the child of this node's grandparent that is not this node's parent.
+  * RedBlackBinaryNode* sibling()
+  * - Returns the RedBlackBinaryNode pointer that is the sibling of this RedBlackBinaryNode;
+  *    returns the child of this node's parent that is not this node.
   * ~RedBlackBinaryNode()
   * - Destructs the RedBlackBinaryNode.
   *
@@ -80,6 +89,7 @@ class RedBlackBinaryNode {
   void setLeft(RedBlackBinaryNode* newLeft);
   void setRight(RedBlackBinaryNode* newRight);
   void setParent(RedBlackBinaryNode* newParent);
+  void setData(int newData);
   void setIsBlack(bool newIsBlack);
   RedBlackBinaryNode* grandparent();
   RedBlackBinaryNode* uncle();

@@ -49,6 +49,10 @@ void RedBlackBinaryNode::setRight(RedBlackBinaryNode* newRight) {
 void RedBlackBinaryNode::setParent(RedBlackBinaryNode* newParent) {
 	parent = newParent;
 }
+//Sets the integer data that this node holds
+void RedBlackBinaryNode::setData(int newData) {
+	data = newData;
+}
 //Sets isBlack property
 void RedBlackBinaryNode::setIsBlack(bool newIsBlack) {
 	isBlack = newIsBlack;

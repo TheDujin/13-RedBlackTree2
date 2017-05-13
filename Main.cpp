@@ -13,7 +13,7 @@
 
 using namespace std;
 
-//Function prototypes
+//Function prototypes, wow there's a lot.
 void add(RedBlackBinaryNode* & root, int newNode);
 void print(RedBlackBinaryNode* root);
 void remove(RedBlackBinaryNode* & root, int target);
@@ -89,7 +89,7 @@ int main () {
 					bool isFinished = false;
 					//While they haven't typed "c" (for continue), we ask them what they want to do with the tree
 					while (!isFinished) {
-					  cout << "Would you like to \"print\" the tree, \"add\" a node to the tree, or \"continue\"?" << endl << "Input: ";
+						cout << "Would you like to \"print\" the tree, \"add\" a node to the tree, \"search\" for a value, \"delete\" a node, or \"continue\"?" << endl << "Input: ";
 					  cin >> choose;
 					  cin.ignore(256, '\n');
 					  if (choose == 'p' || choose == 'P') print(root);
@@ -101,6 +101,7 @@ int main () {
 						  add(root, target);
 
 					  }
+					  //Search for a number
 					  else if (choose == 's' || choose == 'S') {
 						  int target;
 						  cout << "Please enter the value of the Node you want to search for." << endl << "Target: ";
@@ -108,13 +109,14 @@ int main () {
 						  search(root, target);
 
 					  }
-		//			  else if (choose == 'd' || choose == 'D') {
-		//				  int target;
-		//				  cout << "Please enter the value of the Node you want to delete." << endl << "Target: ";
-		//				  cin >> target;
-		//				  remove(root, target);
-		//
-		//			  }
+					  //Delete a number, if it exists
+					  else if (choose == 'd' || choose == 'D') {
+						  int target;
+						  cout << "Please enter the value of the Node you want to delete." << endl << "Target: ";
+						  cin >> target;
+						  remove(root, target);
+
+					  }
 					  else if (choose == 'c' || choose == 'C') isFinished = true;
 					  else cout << "That input is invalid. Please try again." << endl;
 					}
@@ -154,7 +156,7 @@ int main () {
 			print(root);
 			bool isFinished = false;
 			while (!isFinished) {
-			  cout << "Would you like to \"print\" the tree, \"add\" a node from the tree, \"search\" for a value, \"delete\" a node, or \"continue\"?" << endl << "Input: ";
+			  cout << "Would you like to \"print\" the tree, \"add\" a node to the tree, \"search\" for a value, \"delete\" a node, or \"continue\"?" << endl << "Input: ";
 			  cin >> choose;
 			  cin.ignore(256, '\n');
 			  if (choose == 'p' || choose == 'P') print(root);
@@ -172,18 +174,19 @@ int main () {
 				  search(root, target);
 
 			  }
-//			  else if (choose == 'd' || choose == 'D') {
-//				  int target;
-//				  cout << "Please enter the value of the Node you want to delete." << endl << "Target: ";
-//				  cin >> target;
-//				  remove(root, target);
-//
-//			  }
+			  else if (choose == 'd' || choose == 'D') {
+				  int target;
+				  cout << "Please enter the value of the Node you want to delete." << endl << "Target: ";
+				  cin >> target;
+				  remove(root, target);
+
+			  }
 			  else if (choose == 'c' || choose == 'C') isFinished = true;
 			  else cout << "That input is invalid. Please try again." << endl;
 			}
 
 		}
+		//If user wants to, quit the program.
 		else if (choose == 'q' || choose == 'Q') {
 			running = false;
 			cout << "Ending program..." << endl << "Thanks for using this program!" << endl;
@@ -224,7 +227,7 @@ void add(RedBlackBinaryNode* & root, int newNode) {
 					current = current->getLeft();
 			}
 		}
-		//Walk through the cases and deal with them
+		//Walk through the red-black cases and deal with them
 		case1(addedNode, root);
 
 
@@ -260,6 +263,7 @@ void print(RedBlackBinaryNode* root) {
 	}
 	else cout << "The tree is empty." << endl;
 }
+
 //Deletes the targeted node, if its exists.
 void remove(RedBlackBinaryNode* & root, int target) {
 	//TODO Make deletion preserve red-black property
@@ -292,22 +296,16 @@ void remove(RedBlackBinaryNode* & root, int target) {
 		}
 	}
 	cout << "A node with value of \"" << target << "\" was removed from the tree." << endl;
-	//TODO In here, once the replacement is found, don't delete it and instead call red-black stuff on it.
+	//If the node we are deleting only has one child, go ahead and call "deleteOneChild" on it.
+	//Otherwise, find the predecessor and call "deleteOneChild" on it after overriding the target with predecessor's data.
 	if (current->getLeft() != NULL) hasLeft = true;
 	if (current->getRight() != NULL) hasRight = true;
 	if (parent != NULL)
 		if (parent->getLeft() == current) targetIsLeftChild = true;
 
-
-
-
-
-	/*if (hasLeft) {
+	if (hasLeft) {
 		if (!hasRight) {
-			if (targetIsLeftChild && parent != NULL) parent->setLeft(current->getLeft());
-			else if (parent != NULL) parent->setRight(current->getLeft());
-			else root = current->getLeft();
-			delete current;
+			deleteOneChild(current, root);
 		}
 		else {
 			RedBlackBinaryNode* rightmost = current->getLeft();
@@ -316,29 +314,16 @@ void remove(RedBlackBinaryNode* & root, int target) {
 				rightmostParent = rightmost;
 				rightmost = rightmost->getRight();
 			}
-			if (targetIsLeftChild && parent != NULL) parent->setLeft(rightmost);
-			else if (parent!= NULL) parent->setRight(rightmost);
-			else root = rightmost;
-			if (rightmostParent != current) {
-				rightmostParent->setRight(rightmost->getLeft());
-				rightmost->setLeft(current->getLeft());
-			}
-			rightmost->setRight(current->getRight());
-			delete current;
+			current->setData(rightmost->getData());
+			deleteOneChild(rightmost, root);
 		}
 	}
 	else if (hasRight) {
-		if (targetIsLeftChild && parent != NULL) parent->setLeft(current->getRight());
-		else if (parent != NULL) parent->setRight(current->getRight());
-		else root = current->getRight();
-		delete current;
+		deleteOneChild(current, root);
 	}
 	else {
-		if (targetIsLeftChild && parent != NULL) parent->setLeft(NULL);
-		else if (parent != NULL) parent->setRight(NULL);
-		else root = NULL;
-		delete current;
-	}*/
+		deleteOneChild(current, root);
+	}
 
 }
 
@@ -349,6 +334,7 @@ void search(RedBlackBinaryNode* root, int target) {
 		cout << "The root is null. There is nothing in this tree, especially not " << target << "." << endl;
 		return;
 	}
+	//Shifts left if the target is less than the current node data, shifts right otherwise.
 	while (current != NULL) {
 		if (target == current->getData()) {
 			cout << "The value " << target << " exists in this tree." << endl;
@@ -464,16 +450,68 @@ void rotateRight(RedBlackBinaryNode* target, RedBlackBinaryNode* & root) {
 void deleteOneChild(RedBlackBinaryNode* & target, RedBlackBinaryNode* & root) {
 	cout << "Delete one child" << endl;
 	RedBlackBinaryNode* child = target->getLeft() != NULL ? target->getLeft() : target->getRight();
-	if (target == target->getParent()->getLeft()) target->getParent()->setLeft(child);
-	else target->getParent()->setRight(child);
-	if (child != NULL) child->setParent(target->getParent());
-	//TODO Does the above work?
-	if (target->getIsBlack()) {
-		if (child != NULL && !child->getIsBlack()) child->setIsBlack(false);
+	//We basically cut the target node out of the tree and move its child (if it has one) up to where it was.
+	//If target has no children, create a (temporary) node with data NULL (0).
+	if (target == target->getParent()->getLeft()) {
+		if (child == NULL) {
+			if (target->getParent() != NULL) {
+				target->getParent()->setLeft(new RedBlackBinaryNode(target->getParent(), NULL, true));
+				child = target->getParent()->getLeft();
+			}
+			else root = NULL;
+		}
 		else {
+			if (target->getParent() != NULL) {
+				target->getParent()->setLeft(child);
+			}
+			else root = child;
+		}
+	}
+	else {
+		if (child == NULL) {
+			if (target->getParent() != NULL) {
+				target->getParent()->setRight(new RedBlackBinaryNode(target->getParent(), NULL, true));
+				child = target->getParent()->getRight();
+			}
+			else root = NULL;
+		}
+		else {
+			if (target->getParent() != NULL) {
+				target->getParent()->setRight(child);
+			}
+			else root = child;
+		}
+
+	}
+	//Sets child's parent pointer, redundantly checking that child is actually a node and not just NULL.
+	if (child != NULL) child->setParent(target->getParent());
+	//If the target is black and its child is red, change child to black and we're done. Otherwise, things get messier...
+	if (target->getIsBlack()) {
+		if (child != NULL && !child->getIsBlack()) child->setIsBlack(true);
+		else if (child != NULL){
+			//Start doing red-black delete cases.
 			deleteCase1(child, root);
 		}
 	}
+	//The delete cases were used to rebalance the tree. Now we can remove the NULL node we created (if we needed to create one).
+	if (child->getData() == NULL) {
+		if (child->getParent() == NULL) {
+			delete child;
+			root = NULL;
+		}
+		else if (child->getParent()->getLeft() == child) {
+			RedBlackBinaryNode* temp = child->getParent();
+			delete child;
+			temp->setLeft(NULL);
+		}
+		else {
+			RedBlackBinaryNode* temp = child->getParent();
+			delete child;
+			temp->setRight(NULL);
+		}
+	}
+	//Destruct the target
+	delete target;
 }
 
 //Deletion case 1: If target is the new root, we're done. Otherwise, do deletion case 2.
@@ -486,34 +524,77 @@ void deleteCase1(RedBlackBinaryNode* & target, RedBlackBinaryNode* & root) {
 void deleteCase2(RedBlackBinaryNode* & target, RedBlackBinaryNode* & root) {
 	cout << "Delete case 2" << endl;
 	RedBlackBinaryNode* sibling = target->sibling();
-	if (!sibling->getIsBlack()) {
+	if (sibling != NULL && !sibling->getIsBlack()) {
 		target->getParent()->setIsBlack(false);
 		sibling->setIsBlack(true);
 		if (target == target->getParent()->getLeft()) rotateLeft(target->getParent(), root);
 		else rotateRight(target->getParent(), root);
 	}
+	deleteCase3(target, root);
 }
 
 //Deletion case 3: If target's parent, sibling, and nephews are black, we repaint sibling to red and recursively call
 //case 1 on parent. Otherwise, proceed to case 4.
 void deleteCase3(RedBlackBinaryNode* & target, RedBlackBinaryNode* & root) {
 	cout << "Delete case 3" << endl;
+	RedBlackBinaryNode* sibling = target->sibling();
+	if (target->getParent()->getIsBlack() && sibling->getIsBlack()
+			&& (sibling->getLeft() == NULL || sibling->getLeft()->getIsBlack())
+			&& (sibling->getRight() == NULL || sibling->getRight()->getIsBlack())) {
+		sibling->setIsBlack(false);
+		RedBlackBinaryNode* parent = target->getParent();
+		deleteCase1(parent, root);
+	}
+	else deleteCase4(target, root);
 }
 
 //Deletion case 4: If target's parent is red and its sibling and nephews are black, swap colors of parent and sibling.
 //Else, call case 5.
 void deleteCase4(RedBlackBinaryNode* & target, RedBlackBinaryNode* & root) {
 	cout << "Delete case 4" << endl;
+	RedBlackBinaryNode* sibling = target->sibling();
+	if (!target->getParent()->getIsBlack() && sibling->getIsBlack()
+			&& (sibling->getLeft() == NULL || sibling->getLeft()->getIsBlack())
+			&& (sibling->getRight() == NULL || sibling->getRight()->getIsBlack())) {
+		sibling->setIsBlack(false);
+		target->getParent()->setIsBlack(true);
+	}
+	else deleteCase5(target, root);
 }
 
 //Deletion case 5: If target's sibling is black and one of its nephews is red while the other is black, rotate
 //sibling so that the red nephew goes on top. Then call case 6.
 void deleteCase5(RedBlackBinaryNode* & target, RedBlackBinaryNode* & root) {
 	cout << "Delete case 5" << endl;
+	RedBlackBinaryNode* sibling = target->sibling();
+	if (sibling->getIsBlack()) {
+		if (target == target->getParent()->getLeft() && sibling->getRight()->getIsBlack() && !sibling->getLeft()->getIsBlack()) {
+			sibling->setIsBlack(false);
+			sibling->getLeft()->setIsBlack(true);
+			rotateRight(sibling, root);
+		} else if (target == target->getParent()->getRight() && sibling->getLeft()->getIsBlack() && !sibling->getRight()->getIsBlack()) {
+			sibling->setIsBlack(false);
+			sibling->getRight()->setIsBlack(true);
+			rotateLeft(sibling, root);
+		}
+	}
+	deleteCase6(target, root);
 }
 
 //Deletion case 6: Set target's sibling's color to target's parent's color then rotate so that the sibling is on top,
 //then set one of the sibling's red children (left or right depends on the direction of tree rotate)
 void deleteCase6(RedBlackBinaryNode* & target, RedBlackBinaryNode* & root) {
 	cout << "Delete case 6" << endl;
+	RedBlackBinaryNode* sibling = target->sibling();
+	sibling->setIsBlack(target->getParent()->getIsBlack());
+	target->getParent()->setIsBlack(true);
+	if (target == target->getParent()->getLeft()) {
+		sibling->getRight()->setIsBlack(true);
+		rotateLeft(target->getParent(), root);
+	}
+	else {
+		sibling->getLeft()->setIsBlack(true);
+		rotateRight(target->getParent(), root);
+	}
+
 }
