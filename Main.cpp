@@ -452,7 +452,7 @@ void deleteOneChild(RedBlackBinaryNode* & target, RedBlackBinaryNode* & root) {
 	RedBlackBinaryNode* child = target->getLeft() != NULL ? target->getLeft() : target->getRight();
 	//We basically cut the target node out of the tree and move its child (if it has one) up to where it was.
 	//If target has no children, create a (temporary) node with data NULL (0).
-	if (target == target->getParent()->getLeft()) {
+	if (target->getParent() != NULL && target == target->getParent()->getLeft()) {
 		if (child == NULL) {
 			if (target->getParent() != NULL) {
 				target->getParent()->setLeft(new RedBlackBinaryNode(target->getParent(), NULL, true));
