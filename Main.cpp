@@ -494,7 +494,7 @@ void deleteOneChild(RedBlackBinaryNode* & target, RedBlackBinaryNode* & root) {
 		}
 	}
 	//The delete cases were used to rebalance the tree. Now we can remove the NULL node we created (if we needed to create one).
-	if (child->getData() == NULL) {
+	if (child != NULL && child->getData() == NULL) {
 		if (child->getParent() == NULL) {
 			delete child;
 			root = NULL;
